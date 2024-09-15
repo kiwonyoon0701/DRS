@@ -1,17 +1,3 @@
-# LGE DRS를 이용한 DR 문의
-
-## Multi Region DR 구성 요건
-
-### SAP 유관 시스템 DR 50EA
-
-
-
-## 1. Failover 시 CPU Core Factor 변경 방법
-
-현재는 방법이 없어 보임
-
----
-
 
 
 ## 2. Launch시 DR Site용 /etc/fstab 수정 방법(EFS 등)
@@ -341,48 +327,4 @@ sh-4.2$
 
 
 **Drill 시 정상적으로 Target Region에서 Instance 가 올라옴을 확인**
-
-
-
-
-
-
-
----
-
-
-
-
-
-### 3. IP나 Configuration 수정을 위한 방법
-
-
-
-### 4. Workload별 Template 다중 구성 방법
-
-
-
-### 5. 특정 Disk Volume 제외 방법
-
-
-
-### 6. Route 53을 통한 Failover BP
-
-
-
-### 7. IAC Level BP
-
-
-
-### 8. DRS에 복제 설정한 소스 서버의 삭제 절차
-
-
-
-::::expand{header="화면 보기" defaultExpanded=false}
-
-![create cf template](images/1.png)
-
-::::
-
-
 
