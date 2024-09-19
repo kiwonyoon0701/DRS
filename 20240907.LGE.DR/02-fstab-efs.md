@@ -2,6 +2,34 @@
 
 # 2. Launch시 DR Site용 /etc/fstab 수정 방법(EFS 등)
 
+
+
+```
+여기에서는 다음의 3가지 시나리오를 검증하며, 각 방법을 구현하는 방법을 기술합니다.
+자동화를 위하여 최대한 CLI와 SDK를 활용하였습니다.
+
+Source Region : us-west-2
+Target Region : us-east-1
+
+Scenario 1 : 기존 EFS 정보를 /etc/fstab에서 주석문처리
+- 가장 기본이 되는 내용이며, Source에서 사용하던 EFS를 /boot/post_launch/efs-commented.sh을 이용하여, /etc/fstab에서 해당 entry를 주석문 처리하여 정상적으로 Failover하는 방법
+
+Scenario 2 : DR Failover시 자동으로 Target 쪽에서 EFS가 Mount 설정
+- Source to Target Failover 발생 시 us-west-2에서 사용하던 EFS대신, us-east-1(Target)의 EFS로 mount되도록 /boot/post_launch/efs-change.sh을 이용하여, /etc/fstab을 수정하고, Target instance launch시 자동으로 Target EC2에서 mount되는 방법
+
+Scenario 3 : EFS를 DataSync로 동기화 후 DR Failover 후 정상인지 확인
+- Source EFS와 Target EFS를 Data Sync로 동기화하고, Failover시 2의 시나리오처럼 Target Instance launch시 자동으로 Target EFS가 mount되는 방법
+
+```
+
+
+
+
+
+
+
+
+
 ## Scenario 1 : 기존 EFS 정보를 /etc/fstab에서 주석문처리
 
 ```
@@ -628,6 +656,7 @@ Filesystem      Size  Used Avail Use% Mounted on
 
 ```
 [root@dr-id-web-home ~]# grep -Ei "Reached target Multi-User System|/mnt/efs|restart" /var/log/messages
+Sep 15 12:32:44 dr-id-web-home aws-replication-post-convert.sh: Restarting network (via systemctl):  [  OK  ]
 Sep 16 01:46:34 dr-id-web-home aws-replication-post-convert.sh: Restarting network (via systemctl):  [  OK  ]
 Sep 16 01:47:04 dr-id-web-home aws-replication-post-convert.sh: Redirecting to /bin/systemctl restart sshd.service
 Sep 16 01:47:06 dr-id-web-home systemd: Starting Notify NFS peers of a restart...
@@ -641,7 +670,7 @@ Sep 16 01:47:26 dr-id-web-home systemd: Reached target Multi-User System.
 
 
 
-
+---
 
 ---
 
@@ -1080,4 +1109,18 @@ Filesystem      Size  Used Avail Use% Mounted on
 [root@dr-id-web-home ~]# du -sk /mnt/efs
 1577932 /mnt/efs
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
