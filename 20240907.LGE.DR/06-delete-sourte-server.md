@@ -2,7 +2,7 @@
 
 
 
-### 1. Source Server 확인
+### 1. Source Server ID 확인
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> aws drs describe-source-servers --region ap-northeast-1 --query 'items[*].{SourceServerID: sourceServerID, ServerName: sourceProperties.hostname, Status: dataReplicationInfo.dataReplicationState, AWSID: sourceProperties.identificationHints.awsInstanceID, ARN: arn, LastLaunchResult: lastLaunchResult, IdentificationHints: sourceProperties.identificationHints}' --output table
@@ -63,7 +63,7 @@
 
 ---
 
-### 2. Disconnect Server
+### 2. 삭제를 위한 Disconnect Server 작업 수행
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> aws drs disconnect-source-server --source-server-id s-68f4711337ddb941c --region ap-northeast-1
@@ -124,7 +124,9 @@
 
 
 
-### 3. Delete Server
+---
+
+### 3. Source Server에서 Delete Server 수행
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> aws drs delete-source-server --source-server-id s-68f4711337ddb941c --region ap-northeast-1 |jq
@@ -168,9 +170,13 @@
 
 
 
+---
 
+---
 
-### 4. 정상적으로 Disconnect 되지 않을 경우 조치 방법
+---
+
+### 4. 정상적으로 Disconnect나 삭제가 되지 않을 경우 조치 방법 (Console에서 작업 불가)
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> aws drs disconnect-source-server --source-server-id s-6401eaf127460c60c --region ap-northeast-1
@@ -179,7 +185,9 @@ An error occurred (ConflictException) when calling the DisconnectSourceServer op
 
 
 
-**Source Server ID에 연결된 RecoveryInstanceID 조회**
+---
+
+### 5. Source Server ID에 연결된 RecoveryInstanceID 조회
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> aws drs describe-recovery-instances --region ap-northeast-1 --filters sourceServerIDs=s-6401eaf127460c60c --query 'items[*].{RecoveryInstanceID: recoveryInstanceID, SourceServerID: sourceServerID}' --output table|tee /dev/tty
@@ -194,21 +202,13 @@ An error occurred (ConflictException) when calling the DisconnectSourceServer op
 
 
 
-**찾은 ID를 이용해서 삭제**
+---
+
+###  6. 찾은 ID를 이용해서 Disconnect Server 수행
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> aws drs disconnect-recovery-instance --recovery-instance-id i-044e49c0169bbe0f3 --region ap-northeast-1
 ```
-
-
-
-
-
-```
-(base) kiwony@kiwonymac.com:/Users/kiwony> aws drs delete-recovery-instance --recovery-instance-id i-044e49c0169bbe0f3 --region ap-northeast-1
-```
-
-
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> aws drs disconnect-source-server --source-server-id s-6401eaf127460c60c --region ap-northeast-1
@@ -234,6 +234,10 @@ An error occurred (ConflictException) when calling the DisconnectSourceServer op
 ```
 
 
+
+---
+
+### 7. Delete Source Server 수행
 
 ```
 aws drs delete-source-server --source-server-id s-6401eaf127460c60c --region ap-northeast-1 |jq
