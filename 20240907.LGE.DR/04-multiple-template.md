@@ -105,15 +105,15 @@ s-38af4b988c7eefdea	s-36b3444d35aa814c7
 ### 3. Source Server별 Launch Template 확인
 
 ```
-(base) kiwony@kiwonymac.com:/Users/kiwony> # Retrieve Source Server IDs with Dept=FIN
+(base) kiwony@kiwonymac.com:/Users/kiwony> # Dept=FIN 조건에 해당하는 Server ID 추출
 SOURCE_SERVER_IDS=$(aws drs describe-source-servers --region us-east-1 --query 'items[?tags.Dept==`FIN`].sourceServerID' --output text)
 
-# Use a loop to iterate over each line in the output
+# 런치 템플릿 확인
 echo "$SOURCE_SERVER_IDS" | tr '\t' '\n' | while read -r SERVER_ID; do
-    # Trim any leading or trailing whitespace from SERVER_ID
+    # garbage character 제거
     SERVER_ID=$(echo $SERVER_ID | xargs)
 
-    # Check if SERVER_ID matches expected pattern
+    # SERVER_ID 패턴 확인
     if [[ $SERVER_ID =~ ^s-[0-9a-zA-Z]{17}$ ]]; then
         LAUNCH_TEMPLATE_ID=$(aws drs get-launch-configuration --region us-east-1 --source-server-id $SERVER_ID --query "ec2LaunchTemplateID" --output text)
 
@@ -137,22 +137,22 @@ Source Server ID: s-36b3444d35aa814c7, Launch Template ID: lt-01cfc9f74505a3fe9
 ###  4. Source Server별 Launch Template 확인 후 Version2(c5.2xlarge로 변경) 생성
 
 ```
-(base) kiwony@kiwonymac.com:/Users/kiwony> # Retrieve Source Server IDs with Dept=FIN
+(base) kiwony@kiwonymac.com:/Users/kiwony> 
 SOURCE_SERVER_IDS=$(aws drs describe-source-servers --region us-east-1 --query 'items[?tags.Dept==`FIN`].sourceServerID' --output text)
 
-# Use a loop to iterate over each line in the output
+# 런치 템플릿 확인
 echo "$SOURCE_SERVER_IDS" | tr '\t' '\n' | while read -r SERVER_ID; do
-    # Trim any leading or trailing whitespace from SERVER_ID
+    # garbage character 제거
     SERVER_ID=$(echo $SERVER_ID | xargs)
 
-    # Check if SERVER_ID matches expected pattern
+    # SERVER_ID 패턴 확인
     if [[ $SERVER_ID =~ ^s-[0-9a-zA-Z]{17}$ ]]; then
         LAUNCH_TEMPLATE_ID=$(aws drs get-launch-configuration --region us-east-1 --source-server-id $SERVER_ID --query "ec2LaunchTemplateID" --output text)
 
         if [ -n "$LAUNCH_TEMPLATE_ID" ]; then
             echo "Source Server ID: $SERVER_ID, Launch Template ID: $LAUNCH_TEMPLATE_ID"
 
-            # Create a new version of the launch template with updated instance type
+            # 새로운 조건으로 Template 생성
             NEW_VERSION_RESULT=$(aws ec2 create-launch-template-version \
                 --region us-east-1 \
                 --launch-template-id $LAUNCH_TEMPLATE_ID \
@@ -163,7 +163,7 @@ echo "$SOURCE_SERVER_IDS" | tr '\t' '\n' | while read -r SERVER_ID; do
             if [ -n "$NEW_VERSION_RESULT" ]; then
                 echo "New Launch Template Version: $NEW_VERSION_RESULT"
 
-                # Set this new version as default
+                # 새로운 버전 Default 설정
                 aws ec2 modify-launch-template \
                     --region us-east-1 \
                     --launch-template-id $LAUNCH_TEMPLATE_ID \

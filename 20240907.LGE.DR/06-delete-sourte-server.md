@@ -176,6 +176,63 @@
 
 ---
 
+### 4. Source ID 확인
+
+```
+(base) kiwony@kiwonymac.com:/Users/kiwony> aws drs describe-source-servers --region us-east-1 --query 'items[*].{SourceServerID: sourceServerID, ServerName: sourceProperties.hostname, Status: dataReplicationInfo.dataReplicationState, AWSID: sourceProperties.identificationHints.awsInstanceID, ARN: arn, LastLaunchResult: lastLaunchResult, IdentificationHints: sourceProperties.identificationHints}' --output table |tee
+
+|+-------------------------------------+----------------------------------------------------+|
+|                                    DescribeSourceServers                                   |
++------------------+-------------------------------------------------------------------------+
+|  ARN             |  arn:aws:drs:us-east-1:753878350866:source-server/s-308781eb458a80c6b   |
+|  AWSID           |  i-05423386f11bb27e1                                                    |
+|  LastLaunchResult|  SUCCEEDED                                                              |
+|  ServerName      |  None                                                                   |
+|  SourceServerID  |  s-308781eb458a80c6b                                                    |
+|  Status          |  CONTINUOUS                                                             |
++------------------+-------------------------------------------------------------------------+
+||                                    IdentificationHints                                   ||
+|+-------------------------------------+----------------------------------------------------+|
+||  awsInstanceID                      |  i-05423386f11bb27e1                               ||
+||  fqdn                               |  dr-id-web-home-ex                                 ||
+||  hostname                           |  dr-id-web-home-ex                                 ||
+|+-------------------------------------+----------------------------------------------------+|
+```
+
+```
+(base) kiwony@kiwonymac.com:/Users/kiwony> aws drs describe-recovery-instances --region us-east-1 --filters sourceServerIDs=s-308781eb458a80c6b --query 'items[*].{RecoveryInstanceID: recoveryInstanceID, SourceServerID: sourceServerID}' --output table|tee /dev/tty
+------------------------------------------------
+|           DescribeRecoveryInstances          |
++----------------------+-----------------------+
+|  RecoveryInstanceID  |    SourceServerID     |
++----------------------+-----------------------+
+|  i-0294809b5e148f996 |  s-308781eb458a80c6b  |
++----------------------+-----------------------+
+------------------------------------------------
+|           DescribeRecoveryInstances          |
++----------------------+-----------------------+
+|  RecoveryInstanceID  |    SourceServerID     |
++----------------------+-----------------------+
+|  i-0294809b5e148f996 |  s-308781eb458a80c6b  |
++----------------------+-----------------------+
+```
+
+```
+(base) kiwony@kiwonymac.com:/Users/kiwony> aws drs disconnect-recovery-instance --recovery-instance-id i-0294809b5e148f996 --region us-east-1
+```
+
+
+
+```
+aws drs delete-source-server --source-server-id s-308781eb458a80c6b --region us-east-1 |jq
+```
+
+
+
+
+
+
+
 ### 4. 정상적으로 Disconnect나 삭제가 되지 않을 경우 조치 방법 (Console에서 작업 불가)
 
 ```
