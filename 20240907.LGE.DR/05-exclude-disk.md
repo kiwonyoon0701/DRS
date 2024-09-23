@@ -649,15 +649,45 @@ Source Network already exists for vpc: vpc-01918874f8e7b0583.The following is th
 
 
 
+![image-20240922234804919](images/image-20240922234804919.png)
 
 
 
+![image-20240922234822955](images/image-20240922234822955.png)
 
 
 
+![image-20240922235029036](images/image-20240922235029036.png)
 
 
 
+![image-20240922235044027](images/image-20240922235044027.png)
+
+
+
+**Drill Target EC2가 올라오면서 RI도 올라온 것을 확인**
+
+![image-20240922235430425](images/image-20240922235430425.png)
+
+![image-20240922235450080](images/image-20240922235450080.png)
+
+
+
+**기존 4개의 Volume에서 2개로 바뀐 것을 확인**
+
+![image-20240922235651889](images/image-20240922235651889.png)
+
+```
+root@dr-id-web-home-it@VIRGINIA:/root# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        3.8G     0  3.8G   0% /dev
+tmpfs           3.8G     0  3.8G   0% /dev/shm
+tmpfs           3.8G  408K  3.8G   1% /run
+tmpfs           3.8G     0  3.8G   0% /sys/fs/cgroup
+/dev/nvme0n1p1  8.0G  2.3G  5.8G  28% /
+/dev/nvme1n1     10G  556M  9.5G   6% /data1
+tmpfs           776M     0  776M   0% /run/user/0
+```
 
 
 
