@@ -134,7 +134,7 @@ Source Server ID: s-36b3444d35aa814c7, Launch Template ID: lt-01cfc9f74505a3fe9
 
 ---
 
-###  4. Source Server별 Launch Template 확인 후 Version2(c5.2xlarge로 변경) 생성
+###  4. Source Server별 Launch Template 확인 후 Version2(c5.2xlarge로 변경) 생성, 새로운 Default Version으로 지정
 
 ```
 (base) kiwony@kiwonymac.com:/Users/kiwony> 
